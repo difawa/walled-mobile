@@ -10,20 +10,8 @@ function LogoTitle() {
 export default function Home() {
   return (
     <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          title: 'My home',
-          headerStyle: { backgroundColor: '#f4511e' },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-
-          headerTitle: props => <LogoTitle {...props} />,
-        }}
-      />
       <Text>Home Screen</Text>
-      <Link href={{ pathname: 'details', params: { name: 'Bacon' } }}>Go to Details</Link>
+      <Link href="/home/transfer">Go to Details</Link>
     </View>
   );
 }
