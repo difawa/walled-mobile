@@ -1,5 +1,5 @@
 import { Link, Stack } from 'expo-router';
-import { Image, Text, View, StyleSheet } from 'react-native';
+import { Image, Text, View, StyleSheet, ScrollView } from 'react-native';
 
 function LogoTitle() {
   return (
@@ -9,11 +9,20 @@ function LogoTitle() {
 
 export default function Home() {
   return (
-    <View style={styles.container}>
-      <Text>Home Screen</Text>
-      <Link href="/home/transfer">Go to Details</Link>
-    </View>
+    <ScrollView>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View>
+          <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 8 }}>Good Morning, Chelsea</Text>
+          <Text style={{ fontSize: 18 }}>Check all your incoming and outgoing transactions here</Text>
+        </View>
+        <Image source={require('../../assets/sun.png')} style={{ width: 81, height: 77 }} />
+      </View>
+    </ScrollView>
   );
+}
+
+const user = {
+  fullname: 'Chelsea Immanuela',
 }
 
 const styles = StyleSheet.create({

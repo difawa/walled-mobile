@@ -1,8 +1,8 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-function Button({bgColor = "#19918F", textColor = "#fff", text}) {
+function Button({bgColor = "#19918F", textColor = "#fff", text, marginTop = 0, marginBottom = 0}) {
     return (
-        <TouchableOpacity style={{...styles.button, backgroundColor: bgColor}}>
+        <TouchableOpacity style={{...styles.button, backgroundColor: bgColor,  marginTop: marginTop, marginBottom: marginBottom}}>
             <Text style={{...styles.buttonText, color: textColor}}>{text}</Text>
         </TouchableOpacity>
     );
@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     width: '100%',
     alignItems: 'center',
-    marginTop: 50,
   },
   buttonText: {
     fontSize: 16,

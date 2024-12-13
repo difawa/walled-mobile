@@ -22,9 +22,9 @@ export default function App() {
         placeholderTextColor="#aaa" 
         secureTextEntry={true}
       />
-        <Button text="Login"/>
+        <Button marginTop={48} marginBottom={16} text="Login"/>
 
-        <Text style={{marginTop: 20}}>Don't have an account? <Link href="/register" style={{color: '#19918F'}}>Register here</Link> </Text>
+        <Text>Don't have an account? <Link href="/register" style={{color: '#19918F'}}>Register here</Link> </Text>
         
         <Link style={{marginTop: 40}} href="/(home)">Go to Home</Link>
       <StatusBar style="auto"/>

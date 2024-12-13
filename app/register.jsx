@@ -33,9 +33,9 @@ export default function Register() {
             keyboardType='password'
             />
 
-            <Button text="Register"/>
+            <Button text="Register" marginTop={48} marginBottom={16} />
 
-            <Text style={{marginTop: 20}}>Have an account? <Link href="/" style={{color: '#19918F'}}>Login here</Link> </Text>
+            <Text>Have an account? <Link href="/" style={{color: '#19918F'}}>Login here</Link> </Text>
                     
             <StatusBar style="auto"/>
     </View>
