@@ -26,7 +26,7 @@ export default function App() {
 
         <Text>Don't have an account? <Link href="/register" style={{color: '#19918F'}}>Register here</Link> </Text>
         
-        <Link style={{marginTop: 40}} href="/(home)">Go to Home</Link>
+        <Link style={{marginTop: 40, fontSize: 30, color: '#19918F', fontWeight: 'bold'}} href="/(home)">Home</Link>
       <StatusBar style="auto"/>
     </View>
   );

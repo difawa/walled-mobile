@@ -10,3 +10,4 @@ This app is a mini project for learning react native.
 4. Open Expo Go and scan the QR Code.
 5. Develop the apps by writing the program.
 6. `npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar`
+7. Set npx expo as same as the documentation.
