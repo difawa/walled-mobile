@@ -2,6 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import { Link } from 'expo-router';
+
 export default function App() {
   return (
     <View style={styles.container}>
@@ -21,8 +23,10 @@ export default function App() {
         placeholderTextColor="#aaa" 
         secureTextEntry={true}
       />
-
-      <Button text="Login"/>
+      <Link href={"/home"}>
+      ke home
+      </Link>
+        <Button text="Login"/>
       <Input text={"Notes"}/>
       <StatusBar style="auto"/>
     </View>
