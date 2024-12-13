@@ -1,9 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-function Button({bgColor = "#19918F", text}) {
+function Button({bgColor = "#19918F", textColor = "#fff", text}) {
     return (
         <TouchableOpacity style={{...styles.button, backgroundColor: bgColor}}>
-            <Text style={styles.buttonText}>{text}</Text>
+            <Text style={{...styles.buttonText, color: textColor}}>{text}</Text>
         </TouchableOpacity>
     );
 }
@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   buttonText: {
-    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },

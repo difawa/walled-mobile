@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
-import Button from './components/Button';
-import Input from './components/Input';
+import Button from '../components/Button';
+import { Link } from 'expo-router';
+
 export default function App() {
   return (
     <View style={styles.container}>
 
-      <Image source={require('./assets/logo.png')} style={styles.logo} />
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
       
       <TextInput 
         style={styles.input} 
@@ -21,9 +22,11 @@ export default function App() {
         placeholderTextColor="#aaa" 
         secureTextEntry={true}
       />
+        <Button text="Login"/>
 
-      <Button text="Login"/>
-      <Input text={"Notes"}/>
+        <Text style={{marginTop: 20}}>Don't have an account? <Link href="/register" style={{color: '#19918F'}}>Register here</Link> </Text>
+        
+        <Link style={{marginTop: 40}} href="/(home)">Go to Home</Link>
       <StatusBar style="auto"/>
     </View>
   );
