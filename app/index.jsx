@@ -1,9 +1,43 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image} from 'react-native';
 import Button from '../components/Button';
 import { Link } from 'expo-router';
+import { z } from 'zod';
+import { useState } from 'react';
+
+const LoginSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(8, { message: "Must be 8 or more characters long" }),
+});
 
 export default function App() {
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [errorMsg, setErrors] = useState({});
+
+  const handleInputChange = (key, value) => {
+    setForm({ ...form, [key]: value });
+    try {
+      LoginSchema.pick({ [key]: true }).parse({ [key]: value });
+      setErrors((prev) => ({ ...prev, [key]: "" })); 
+    } catch (err) {
+      setErrors((prev) => ({ ...prev, [key]: err.errors[0].message })); 
+    }
+  };
+
+  const handleSubmit = () => {
+    try {
+      LoginSchema.parse(form);
+    } catch (err) {
+      const errors = {};
+      err.errors.forEach((item) => {
+        const key = item.path[0];
+        errors[key] = item.message;
+      });
+      setErrors(errors);
+    }
+  };
+
+
   return (
     <View style={styles.container}>
 
@@ -13,16 +47,23 @@ export default function App() {
         style={styles.input} 
         placeholder="Email" 
         placeholderTextColor="#aaa" 
-        keyboardType='email-address'
+        keyboardType="email-address"
+        onChangeText={(text) => handleInputChange("email", text)}
+        value={form.email}
       />
-      
+      {errorMsg.email ? <Text style={styles.errorMsg}>{errorMsg.email}</Text> : null}
+
       <TextInput 
         style={styles.input} 
         placeholder="Password" 
         placeholderTextColor="#aaa" 
         secureTextEntry={true}
+        onChangeText={(text) => handleInputChange("password", text)}
+        value={form.password}
       />
-        <Button marginTop={48} marginBottom={16} text="Login"/>
+      {errorMsg.password ? <Text style={styles.errorMsg}>{errorMsg.password}</Text> : null}
+
+        <Button marginTop={48} marginBottom={16} text="Login" handlePress={handleSubmit}/>
 
         <Text>Don't have an account? <Link href="/register" style={{color: '#19918F'}}>Register here</Link> </Text>
         
@@ -63,4 +104,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     fontSize: 16,
   },
+  errorMsg: {
+    color: "red",
+    fontSize: 12,
+    width: "100%",
+    textAlign: "left",
+    marginTop: 5,
+  }
 });

@@ -11,3 +11,4 @@ This app is a mini project for learning react native.
 5. Develop the apps by writing the program.
 6. `npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar`
 7. Set npx expo as same as the documentation.
+8. `npm install zod` for checking email on login page
