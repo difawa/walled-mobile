@@ -1,55 +1,131 @@
 import { Link, Stack } from 'expo-router';
-import { Image, Text, View, StyleSheet, TextInput } from 'react-native';
+import { Image, Text, View, StyleSheet, TextInput, Alert, Modal, Pressable, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Button from '../components/Button';
+import Checkbox from 'expo-checkbox'
+import { useState } from 'react';
 
 
 export default function Register() {
+  const [isChecked, setChecked] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const termsandconditions = `1. Acceptance of Terms
+By creating an account or using our services, you agree to be bound by these Terms and Conditions, as well as our Privacy Policy. If you do not agree, please discontinue the use of the application.
+
+2. Eligibility
+You must be at least 18 years old and legally capable of entering into binding agreements to use our services.
+
+3. Account Security
+You are responsible for maintaining the confidentiality of your login credentials and for all activities under your account. Notify us immediately of any unauthorized access or suspicious activity.
+
+4. Services Provided
+The app allows users to store, transfer, and manage funds. We may update, add, or remove features without prior notice.
+
+5. Fees and Charges
+Some services may incur fees, which will be displayed before you complete a transaction. You are responsible for any applicable charges.
+
+6. Prohibited Activities
+You agree not to use the app for illegal activities, fraud, money laundering, or violating any laws or regulations.
+
+7. Transaction Limits
+We may impose daily, weekly, or monthly limits on transactions for security or regulatory reasons.
+
+8. Liability
+We are not liable for losses resulting from unauthorized transactions caused by your negligence or failure to secure your account.
+
+9. Termination of Services
+We reserve the right to suspend or terminate your account at any time for violation of these Terms or any suspicious activities.
+
+10. Modifications to Terms
+We may update these Terms from time to time. Continued use of the app after updates constitutes acceptance of the revised Terms.
+
+11. Governing Law
+These Terms are governed by the laws of walled. Any disputes will be resolved in the courts of walled.
+
+12. Contact Information
+For any questions or concerns regarding these Terms, please contact us at support@walled.com.
+
+Disclaimer: This is a general template and should be reviewed by a legal professional to ensure compliance with local laws and regulations.`;
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/logo.png')} style={styles.logo} />        
-      <TextInput 
-          style={styles.input} 
-          placeholder="Fullname" 
-          placeholderTextColor="#aaa" 
-          keyboardType='ascii-capable'
-          />
-        <TextInput 
-            style={styles.input} 
-            placeholder="Email" 
-            placeholderTextColor="#aaa" 
-            keyboardType='email-address'
-            />
-        <TextInput 
-            style={styles.input} 
-            placeholder="Phone Number" 
-            placeholderTextColor="#aaa" 
-            keyboardType='phone-pad'
-            />
-        <TextInput 
-            style={styles.input} 
-            placeholder="Password" 
-            placeholderTextColor="#aaa" 
-            keyboardType='password'
-            />
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
+      <TextInput
+        style={styles.input}
+        placeholder="Fullname"
+        placeholderTextColor="#aaa"
+        keyboardType='ascii-capable'
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#aaa"
+        keyboardType='email-address'
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Phone Number"
+        placeholderTextColor="#aaa"
+        keyboardType='phone-pad'
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        placeholderTextColor="#aaa"
+        keyboardType='password'
+      />
 
-            <Button text="Register" marginTop={48} marginBottom={16} />
 
-            <Text>Have an account? <Link href="/" style={{color: '#19918F'}}>Login here</Link> </Text>
-                    
-            <StatusBar style="auto"/>
-    </View>
-  );
-}
+      <View style={styles.tnc}>
+        <Checkbox value={isChecked} onValueChange={setChecked} />
+        <Text style={{ maxWidth: '90%' }}>I have read and agree to the
+          <Pressable onPress={() => setModalVisible(!modalVisible)}>
+            <Text style={{ color: '#19918F' }}>
+              Terms and Conditions <Text style={{ color: 'red' }}>*</Text>
+            </Text>
+          </Pressable>
+        </Text>
+      </View>
+
+      <Button text="Register" marginTop={48} marginBottom={16} />
+      <Text>Have an account? <Link href="/" style={{ color: '#19918F' }}>Login here</Link> </Text>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        >
+        <ScrollView>
+          <View style={styles.modalView}>
+          <Text style={{fontWeight: 'bold', fontSize: 20, marginBottom: 20}}>Terms and Conditions</Text>
+            <Text style={styles.modalText}>{termsandconditions}</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={styles.textStyle}>Close</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </Modal>
+      
+      <StatusBar style="auto" />
+    </View > 
+  );    
+}    
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-      },
+  tnc: {    
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 10,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
   input: {
     width: '100%',
     height: 50,
@@ -67,5 +143,43 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     resizeMode: 'stretch',
     marginBottom: 75
-  }
+  },
+  checkbox: {
+    margin: 8
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'justify',
+  },
 });
