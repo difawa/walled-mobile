@@ -70,14 +70,11 @@ const handleSubmit = async() => {
   try {
     RegisSchema.parse(form);
     await axios.post("http://192.168.176.179:8081/auth/register", form);
+    Alert.alert("Success", "Registration is success! Please login.");
     router.replace("/")
   } catch (err) {
-    const errors = {};
-    err.errors.forEach((item) => {
-      const key = item.path[0];
-      errors[key] = item.message;
-    });
-    setErrors(errors);
+    console.log('test')
+    Alert.alert("Failed", `Registration failed, ${err.response.data.error}. Try other email or username!`);
   }
 };
   return (
@@ -96,7 +93,7 @@ const handleSubmit = async() => {
           placeholder="Username"
           placeholderTextColor="#aaa"
           onChangeText={(text) => handleInputChange("username", text)}
-          value={form.username}
+          value={form.username.toLowerCase()}
           />
       <TextInput
         style={styles.input}
@@ -104,7 +101,7 @@ const handleSubmit = async() => {
         placeholderTextColor="#aaa"
         keyboardType='email-address'
         onChangeText={(text) => handleInputChange("email", text)}
-        value={form.email}
+        value={form.email.toLowerCase()}
         />
         {errorMsg.email ? <Text style={styles.errorMsg}>{errorMsg.email}</Text> : null}
       <TextInput
