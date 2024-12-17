@@ -1,5 +1,9 @@
 import { Link, Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { Image, Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
@@ -10,14 +14,37 @@ function LogoTitle() {
 }
 
 export default function Home() {
+  const [user, setUser] = useState({})
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const value = await AsyncStorage.getItem("token");
+        if (value !== null) {
+          const res = await axios.get(
+            "http://192.168.176.179:8081/profile",
+            {
+              headers: {
+                Authorization: `Bearer ${value}`,
+              },
+            }
+          );
+          const user = res.data.data
+          setUser(user)
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getData();
+  }, []);
   return (
     <ScrollView containerStyle={styles.container}>
       <View style={styles.header}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <Image source={require('../../assets/avatar.png')} style={{ width: 50, height: 50 }} />
           <View>
-            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{user.fullname}</Text>
-            <Text style={{ fontSize: 18 }}>{user.typeofaccount}</Text>
+            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{user?.fullname}</Text>
+            <Text style={{ fontSize: 18 }}>{user?.typeofaccount}</Text>
           </View>
         </View>
         <Image source={require('../../assets/suntoggle.png')} />
@@ -25,7 +52,7 @@ export default function Home() {
       <View style={{ backgroundColor: '#FAFBFD', paddingHorizontal: 20 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 25, justifyContent: 'space-between' }}>
           <View style={{ width: '70%' }}>
-            <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 8 }}>Good Morning, {user.fullname.split(' ')[0]}</Text>
+            <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 8 }}>Good Morning, {user?.fullname && user.fullname.split(' ')[0]}</Text>
             <Text style={{ fontSize: 18 }}>Check all your incoming and outgoing transactions here</Text>
           </View>
           <Image source={require('../../assets/sun.png')} style={{ width: 81, height: 77 }} />
@@ -39,7 +66,7 @@ export default function Home() {
         <View style={styles.balancebox}>
           <View>
             <Text style={{ fontSize: 20 }}>Balance</Text>
-            <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Rp {user.balance}</Text>
+            <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Rp {user?.balance}</Text>
           </View>
           <View>
             <View style={{ gap: 20 }}>
@@ -68,16 +95,17 @@ export default function Home() {
         </ScrollView>
 
       </View>
+      <StatusBar style="auto" />
     </ScrollView>
   );
 }
 
-const user = {
-  fullname: 'John Doe',
-  typeofaccount: 'Personal Account',
-  accountnumber: '123456789',
-  balance: '10.000.000'
-}
+// const user = {
+//   fullname: 'John Doe',
+//   typeofaccount: 'Personal Account',
+//   accountnumber: '123456789',
+//   balance: '10.000.000'
+// }
 
 const transactions = [
   {
@@ -95,6 +123,14 @@ const transactions = [
     name: 'Si Fulan',
     type: 'Transfer',
     debit: true,
+  },
+  {
+    id: 3,
+    date: '06 December 2024',
+    amount: '80.000',
+    name: 'Si Fulan',
+    type: 'Transfer',
+    debit: false,
   },
 ]
 

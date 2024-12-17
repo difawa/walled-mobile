@@ -1,32 +1,43 @@
+
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Image} from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image } from 'react-native';
 import Button from '../components/Button';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { z } from 'zod';
 import { useState } from 'react';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const LoginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
-  password: z.string().min(8, { message: "Must be 8 or more characters long" }),
+  password: z.string().min(3, { message: "Must be 8 or more characters long" }),
 });
 
+let storeData = ""
 export default function App() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [errorMsg, setErrors] = useState({});
+
 
   const handleInputChange = (key, value) => {
     setForm({ ...form, [key]: value });
     try {
       LoginSchema.pick({ [key]: true }).parse({ [key]: value });
-      setErrors((prev) => ({ ...prev, [key]: "" })); 
+      setErrors((prev) => ({ ...prev, [key]: "" }));
     } catch (err) {
-      setErrors((prev) => ({ ...prev, [key]: err.errors[0].message })); 
+      setErrors((prev) => ({ ...prev, [key]: err.errors[0].message }));
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     try {
       LoginSchema.parse(form);
+      const res = await axios.post("http://192.168.176.179:8081/auth/login", form);
+      console.log(form)
+      await AsyncStorage.setItem('token', res.data.data.token);
+      console.log(res.data.data.token)
+      router.replace("/(home)")
     } catch (err) {
       const errors = {};
       err.errors.forEach((item) => {
@@ -42,33 +53,32 @@ export default function App() {
     <View style={styles.container}>
 
       <Image source={require('../assets/logo.png')} style={styles.logo} />
-      
-      <TextInput 
-        style={styles.input} 
-        placeholder="Email" 
-        placeholderTextColor="#aaa" 
+
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#aaa"
         keyboardType="email-address"
         onChangeText={(text) => handleInputChange("email", text)}
         value={form.email}
       />
       {errorMsg.email ? <Text style={styles.errorMsg}>{errorMsg.email}</Text> : null}
 
-      <TextInput 
-        style={styles.input} 
-        placeholder="Password" 
-        placeholderTextColor="#aaa" 
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        placeholderTextColor="#aaa"
         secureTextEntry={true}
         onChangeText={(text) => handleInputChange("password", text)}
         value={form.password}
       />
       {errorMsg.password ? <Text style={styles.errorMsg}>{errorMsg.password}</Text> : null}
 
-        <Button marginTop={48} marginBottom={16} text="Login" handlePress={handleSubmit}/>
+      <Button marginTop={48} marginBottom={16} text="Login" handlePress={handleSubmit} />
 
-        <Text>Don't have an account? <Link href="/register" style={{color: '#19918F'}}>Register here</Link> </Text>
-        
-        <Link style={{marginTop: 40, fontSize: 30, color: '#19918F', fontWeight: 'bold'}} href="/(home)">Home</Link>
-      <StatusBar style="auto"/>
+      <Text>Don't have an account? <Link href="/register" style={{ color: '#19918F' }}>Register here</Link> </Text>
+
+      <StatusBar style="auto" />
     </View>
   );
 }
