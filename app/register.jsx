@@ -1,10 +1,16 @@
-import { Link, Stack } from 'expo-router';
+import { Link, router, Stack } from 'expo-router';
 import { Image, Text, View, StyleSheet, TextInput, Alert, Modal, Pressable, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Button from '../components/Button';
 import Checkbox from 'expo-checkbox'
 import { useState } from 'react';
+import {z} from 'zod';
+import axios from 'axios';
 
+const RegisSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(8, { message: "Must be 8 or more characters long" }),
+});
 
 export default function Register() {
   const [isChecked, setChecked] = useState(false);
@@ -46,6 +52,34 @@ These Terms are governed by the laws of walled. Any disputes will be resolved in
 For any questions or concerns regarding these Terms, please contact us at support@walled.com.
 
 Disclaimer: This is a general template and should be reviewed by a legal professional to ensure compliance with local laws and regulations.`;
+
+const [form, setForm] = useState({"fullname": "", "username": "", "email": "", "password": "" });
+const [errorMsg, setErrors] = useState({});
+
+const handleInputChange = (key, value) => {
+  setForm({ ...form, [key]: value });
+  try {
+    RegisSchema.pick({ [key]: true }).parse({ [key]: value });
+    setErrors((prev) => ({ ...prev, [key]: "" }));
+  } catch (err) {
+    setErrors((prev) => ({ ...prev, [key]: err.errors[0].message }));
+  }
+};
+
+const handleSubmit = async() => {
+  try {
+    RegisSchema.parse(form);
+    await axios.post("http://192.168.176.179:8081/auth/register", form);
+    router.replace("/")
+  } catch (err) {
+    const errors = {};
+    err.errors.forEach((item) => {
+      const key = item.path[0];
+      errors[key] = item.message;
+    });
+    setErrors(errors);
+  }
+};
   return (
     <View style={styles.container}>
       <Image source={require('../assets/logo.png')} style={styles.logo} />
@@ -54,26 +88,34 @@ Disclaimer: This is a general template and should be reviewed by a legal profess
         placeholder="Fullname"
         placeholderTextColor="#aaa"
         keyboardType='ascii-capable'
-      />
+        onChangeText={(text) => handleInputChange("fullname", text)}
+        value={form.fullname}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Username"
+          placeholderTextColor="#aaa"
+          onChangeText={(text) => handleInputChange("username", text)}
+          value={form.username}
+          />
       <TextInput
         style={styles.input}
         placeholder="Email"
         placeholderTextColor="#aaa"
         keyboardType='email-address'
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Phone Number"
-        placeholderTextColor="#aaa"
-        keyboardType='phone-pad'
-      />
+        onChangeText={(text) => handleInputChange("email", text)}
+        value={form.email}
+        />
+        {errorMsg.email ? <Text style={styles.errorMsg}>{errorMsg.email}</Text> : null}
       <TextInput
         style={styles.input}
         placeholder="Password"
         placeholderTextColor="#aaa"
         keyboardType='password'
+        onChangeText={(text) => handleInputChange("password", text)}
+        value={form.password}
       />
-
+      {errorMsg.password ? <Text style={styles.errorMsg}>{errorMsg.password}</Text> : null}
 
       <View style={styles.tnc}>
         <Checkbox value={isChecked} onValueChange={setChecked} />
@@ -86,7 +128,7 @@ Disclaimer: This is a general template and should be reviewed by a legal profess
         </Text>
       </View>
 
-      <Button text="Register" marginTop={48} marginBottom={16} />
+      <Button text="Register" marginTop={48} marginBottom={16} handlePress={handleSubmit} />
       <Text>Have an account? <Link href="/" style={{ color: '#19918F' }}>Login here</Link> </Text>
 
       <Modal
@@ -182,4 +224,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'justify',
   },
+  errorMsg: {
+    color: "red",
+    fontSize: 12,
+    width: "100%",
+    textAlign: "left",
+  }
 });

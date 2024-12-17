@@ -10,13 +10,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const LoginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z.string().min(3, { message: "Must be 8 or more characters long" }),
+  email: z.string().email({ message: "Invalid email address" })
 });
 
-let storeData = ""
 export default function App() {
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ "email": "", "password": "" });
   const [errorMsg, setErrors] = useState({});
 
 
